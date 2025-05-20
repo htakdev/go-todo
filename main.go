@@ -12,6 +12,21 @@ import (
 var todoList *TodoList
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
+func enableCORS(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next(w, r)
+	}
+}
+
 func main() {
 	var err error
 	todoList, err = NewTodoList()
@@ -24,7 +39,7 @@ func main() {
 
 	// ルートハンドラ
 	http.HandleFunc("/", handleIndex)
-	http.HandleFunc("/todos", handleTodos)
+	http.HandleFunc("/todos", enableCORS(handleTodos))
 
 	fmt.Println("サーバーを起動します: http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
