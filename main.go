@@ -3,14 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"strconv"
 )
 
 var todoList *TodoList
-var templates = template.Must(template.ParseGlob("templates/*.html"))
 
 func enableCORS(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -34,9 +32,6 @@ func main() {
 		log.Fatalf("TODOリストの初期化エラー: %v", err)
 	}
 
-	// 静的ファイルの提供
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-
 	// ルートハンドラ
 	http.HandleFunc("/", handleIndex)
 	http.HandleFunc("/todos", enableCORS(handleTodos))
@@ -51,16 +46,25 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todos, err := todoList.GetAll()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	// APIのステータス情報を返す
+	status := struct {
+		Status    string `json:"status"`
+		Version   string `json:"version"`
+		Endpoints struct {
+			Todos string `json:"todos"`
+		} `json:"endpoints"`
+	}{
+		Status:  "running",
+		Version: "1.0.0",
+		Endpoints: struct {
+			Todos string `json:"todos"`
+		}{
+			Todos: "/todos",
+		},
 	}
 
-	err = templates.ExecuteTemplate(w, "index.html", todos)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(status)
 }
 
 func handleTodos(w http.ResponseWriter, r *http.Request) {
