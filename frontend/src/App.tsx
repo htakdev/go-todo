@@ -68,12 +68,11 @@ function App() {
 
   const deleteTodo = async (id: number) => {
     try {
-      const response = await fetch('/api/todos', {
+      const response = await fetch(`/api/todos?id=${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `id=${id}`
+        }
       })
 
       if (response.ok) {

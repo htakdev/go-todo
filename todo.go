@@ -105,6 +105,7 @@ func (tl *TodoList) Toggle(id int) (bool, error) {
 
 // Delete はTODOを削除します
 func (tl *TodoList) Delete(id int) error {
+	fmt.Printf("削除すべきID: %d\n", id)
 	result, err := tl.db.Exec("DELETE FROM todos WHERE id = $1", id)
 	if err != nil {
 		return fmt.Errorf("TODO削除エラー: %v", err)
