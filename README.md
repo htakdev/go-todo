@@ -31,16 +31,30 @@ postgres=# ALTER USER postgres WITH PASSWORD 'postgres';
 postgres=# \q
 ```
 
-3. 依存関係のインストール:
+3. バックエンドの依存関係のインストール:
 ```bash
 go mod download
 ```
 
-4. アプリケーションの起動:
+4. フロントエンドの依存関係のインストール:
+```bash
+cd frontend
+npm install
+```
+
+5. アプリケーションの起動:
+
+バックエンドの起動:
 ```bash
 go run .
 ```
 
+フロントエンドの起動（別のターミナルで）:
+```bash
+cd frontend
+npm run dev
+```
+
 ## 使用方法
 
-ブラウザで http://localhost:8080 にアクセスして、TODOアプリケーションを使用できます。
+ブラウザで http://localhost:5173 にアクセスして、TODOアプリケーションを使用できます。
