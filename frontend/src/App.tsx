@@ -9,6 +9,7 @@ interface Todo {
 }
 
 function App() {
+  const baseURL = import.meta.env.VITE_API_BASE_URL || '';
   const [todos, setTodos] = useState<Todo[]>([])
   const [newTodo, setNewTodo] = useState('')
 
@@ -18,7 +19,7 @@ function App() {
 
   const fetchTodos = async () => {
     try {
-      const response = await fetch('/api/todos')
+      const response = await fetch(`${baseURL}/api/todos`)
       const data = await response.json()
       setTodos(data)
     } catch (error) {
@@ -31,7 +32,7 @@ function App() {
     if (!newTodo.trim()) return
 
     try {
-      const response = await fetch('/api/todos', {
+      const response = await fetch(`${baseURL}/api/todos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -50,7 +51,7 @@ function App() {
 
   const toggleTodo = async (id: number) => {
     try {
-      const response = await fetch('/api/todos', {
+      const response = await fetch(`${baseURL}/api/todos`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -68,7 +69,7 @@ function App() {
 
   const deleteTodo = async (id: number) => {
     try {
-      const response = await fetch(`/api/todos?id=${id}`, {
+      const response = await fetch(`${baseURL}/api/todos?id=${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

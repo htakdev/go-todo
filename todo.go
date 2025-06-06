@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -24,8 +25,12 @@ type TodoList struct {
 // NewTodoList は新しいTodoListを作成します
 func NewTodoList() (*TodoList, error) {
 	// PostgreSQLの接続情報
-	connStr := "host=localhost port=5432 user=postgres password=postgres dbname=todo sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
+	dbURL := os.Getenv("DATABASE_URL")
+    if dbURL == "" {
+        dbURL = "postgres://postgres:postgres@localhost:5432/todo?sslmode=disable"
+    }
+
+	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		return nil, fmt.Errorf("データベース接続エラー: %v", err)
 	}

@@ -34,9 +34,9 @@ func main() {
 
 	// ルートハンドラ
 	http.HandleFunc("/", handleIndex)
-	http.HandleFunc("/todos", enableCORS(handleTodos))
+	http.HandleFunc("/api/todos", enableCORS(handleTodos))
 
-	fmt.Println("サーバーを起動します: http://localhost:8080")
+	fmt.Println("サーバーを起動します")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -59,7 +59,7 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 		Endpoints: struct {
 			Todos string `json:"todos"`
 		}{
-			Todos: "/todos",
+			Todos: "/api/todos",
 		},
 	}
 
